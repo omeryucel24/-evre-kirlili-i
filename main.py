@@ -168,47 +168,4 @@ async def on_message(message):
 
 import requests
 
-
-
-API_KEY = '9ed4d470b65d491f947171658251004'  # Buraya kendi API anahtarınızı koyun
-
-# Botun hazır olduğu mesaj
-@client.event
-async def on_ready():
-    print(f'{client.user} olarak giriş yapıldı!')
-
-# Hava durumu komutunu işleme
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    # Kullanıcıdan şehir ismini almak için komut
-    if message.content.lower().startswith("!hava"):
-        # Şehir ismini almak (Türkçe karakterleri kaldırıyoruz)
-        city = message.content.split("!hava ")[1].strip()
-        
-        # WeatherAPI'ye istek gönderiyoruz
-        url = f'http://api.weatherapi.com/v1/current.json?q={city}&key={API_KEY}&lang=tr'
-        
-        response = requests.get(url)
-
-        # Yanıtın durum kodunu ve metnini yazdırarak hatayı kontrol edelim
-        print(response.status_code)  # API yanıt durum kodu
-        print(response.text)  # API yanıt metni (hata mesajı alabilirsiniz)
-
-        if response.status_code == 200:
-            data = response.json()
-            # Hava durumu bilgilerini alıyoruz
-            weather = data['current']['condition']['text']
-            temp = data['current']['temp_c']
-            city_name = data['location']['name']
-
-            # Cevap olarak hava durumu bilgisini gönderiyoruz
-            await message.channel.send(f'{city_name} için hava durumu:\n{weather}\nSıcaklık: {temp}°C')
-        else:
-            # Şehir bulunamazsa hata mesajı gönderiyoruz
-            await message.channel.send(f'{city} için hava durumu bilgisi alınamadı. Şehri doğru yazdığınızdan emin olun.')
-            
-
 client.run("token")
